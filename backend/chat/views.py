@@ -1,20 +1,23 @@
 from django.shortcuts import render
 
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from .models import Chat, Message
 from .serializers import ChatSerializer, MessageSerializer
-from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
 class ChatViewSet(viewsets.ModelViewSet):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
-    permission_classes = [IsAuthenticated] #faz com que o user esteja autenticado
-    
+    permission_classes = [permissions.IsAuthenticated]
+
 class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated] #mesma coisa que a class de cima
-    
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        chat_id = self.request.query_params.get('chat')
+        if chat_id:
+            return Message.objects.filter(chat_id=chat_id)
+        return Message.objects.none()
+
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user)
+        serializer.save(user=self.request.user)
