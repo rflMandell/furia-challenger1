@@ -1,22 +1,21 @@
 # Python
-__pycache__/
 *.py[cod]
-*.sqlite3
+__pycache__/
 *.log
+
+# Django
+backend/db.sqlite3
+/staticfiles/
 
 # Virtual environments
 venv/
 ENV/
 env/
 
-# Django
-db.sqlite3
-/staticfiles/
-
 # Node.js / React
-node_modules/
-dist/
-build/
+furia-frontend/node_modules/
+furia-frontend/dist/
+furia-frontend/build/
 
 # IDEs
 .vscode/
