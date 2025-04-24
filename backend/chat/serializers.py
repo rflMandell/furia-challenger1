@@ -1,15 +1,16 @@
 from rest_framework import serializers
 from .models import Chat, Message
-from core.models import User
+from core.serializers import UserSerializer
 
 class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
-        fields = ['id', 'name', 'description', 'created_at']
-        
+        fields = ['id', 'name', 'slug']
+
 class MessageSerializer(serializers.ModelSerializer):
-    sender = serializers.StringRelatedField() #vai exibir o nome do user que enviou a msg
-    
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Message
-        fields = ['id', 'chat', 'sender', 'content', 'created_at']
+        fields = ['id', 'chat', 'user', 'content', 'timestamp']
+        read_only_fields = ['user', 'timestamp']
