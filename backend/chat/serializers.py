@@ -5,12 +5,12 @@ from core.serializers import UserSerializer
 class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
-        fields = ['id', 'name', 'slug']
+        fields = ['id', 'name', 'description', 'created_at']
 
 class MessageSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    sender = UserSerializer(read_only=True)
 
     class Meta:
         model = Message
-        fields = ['id', 'chat', 'user', 'content', 'timestamp']
-        read_only_fields = ['user', 'timestamp']
+        fields = ['id', 'chat', 'sender', 'content', 'created_at']
+        read_only_fields = ['sender', 'created_at']

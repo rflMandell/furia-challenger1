@@ -1,11 +1,12 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ChatViewSet, MessageViewSet
+from .views import ChatViewSet, MessageViewSet, online_users_view
 
 router = DefaultRouter()
-router.register(r'chat', ChatViewSet)
-router.register(r'message', MessageViewSet)
+router.register(r'chats', ChatViewSet)     
+router.register(r'messages', MessageViewSet)
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
+    path('online-users/', online_users_view),
 ]
