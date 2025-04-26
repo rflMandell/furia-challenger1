@@ -132,13 +132,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-ASGI_APPLICATION = 'furia_chat.asgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'host': [('127.0.0.1', 6379)],
-        },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
     },
 }
 

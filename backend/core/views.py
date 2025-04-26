@@ -1,13 +1,16 @@
-from django.shortcuts import render
-
 from rest_framework import viewsets, permissions
-from django.contrib.auth import get_user_model
-from .serializers import UserSerializer
-# Create your views here.
+from .models import Chat, Message
+from .serializers import ChatSerializer, MessageSerializer
 
-User = get_user_model()
+class ChatViewSet(viewsets.ModelViewSet):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAdminUser] #so adm acessa a lista
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
