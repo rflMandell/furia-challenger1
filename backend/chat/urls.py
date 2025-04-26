@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ChatViewSet, MessageViewSet, online_users_view, VoteViewSet, ChatListView, MessageCreateView, MessageListView, VoteChatView, HighlightMessageView, RemoveHighlightMessageView
+from .views import ChatViewSet, MessageViewSet, online_users_view, VoteViewSet, ChatListView, MessageCreateView, MessageListView, VoteChatView, HighlightMessageView, RemoveHighlightMessageView, ChatsWithHighlightedMessagesView
 
 router = DefaultRouter()
 router.register(r'chats', ChatViewSet)     
@@ -17,6 +17,7 @@ urlpatterns = [
     path('messages/', MessageListView.as_view(), name='message-list'),
     path('messages/<int:message_id>/highlight/', HighlightMessageView.as_view(), name='highlight-message'),
     path('messages/<int:message_id>/remove-highlight/', RemoveHighlightMessageView.as_view(), name='remove-highlight-message'),
+    path('chats/highlighted/', ChatsWithHighlightedMessagesView.as_view(), name='chats-with-highlighted-messages'),
 ]
 
 urlpatterns += router.urls

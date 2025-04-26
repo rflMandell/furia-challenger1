@@ -6,6 +6,7 @@ from .models import Chat, Message, Vote
 from .serializers import ChatSerializer, MessageSerializer, VoteSerializer
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from .online_users import get_online_users
 
 class ChatViewSet(viewsets.ModelViewSet):
@@ -138,6 +139,17 @@ class RemoveHighlightMessageView(views.APIView):
         message.save()
         
         return Response({"detail": "destaque removido com sucesso."}, status=status.HTTP_200_OK)
+    
+class ChatsWithHighlightedMessagesView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        chats_with_highlighted_messages = Chat.objects.filter(
+            messages__is_highlighted=True
+        ).distinct()
+        
+        serializer = ChatSerializer(chats_with_highlighted_messages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
 
 def online_users_view(request):
