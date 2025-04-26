@@ -190,6 +190,28 @@ class MessagesWithVotesByChatViews(views.APIView):
         serializer = MessagesWithVotesByChatViews(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
+class ChatSummaryView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    def get(self, request):
+        chats = Chat.objects.all()
+        summary = []
+
+        for chat in chats:
+            messages = chat.messages.all()
+            total_messages = messages.count()
+            highlighted_messages = messages.filter(highlighted=True).count()
+            total_votes = messages.aggregate(total_votes=models.Sum('votes'))['total_votes'] or 0
+            
+            summary.append({
+                'chat_id': chat.id,
+                'chat_name': chat.name,
+                'total_messages': total_messages,
+                'highlighted_messages': highlighted_messages,
+                'total_votes': total_votes,
+            })
+        
+        return Response(summary)
 
 def online_users_view(request):
     return JsonResponse({"online_users": get_online_users()})

@@ -20,6 +20,7 @@ urlpatterns = [
     path('chats/highlighted/', ChatsWithHighlightedMessagesView.as_view(), name='chats-with-highlighted-messages'),
     path('chats/<int:chat_id>/messages/', MessagesByChatView.as_view(), name='messages-by-chat'),
     path('chats/<int:chat_id>/messages_with_votes/', MessagesWithVotesByChatViews.as_view(), name='messages-with-votes-by-chat'),
+    path('chats/summary/', ChatSummaryView.as_view(), name='chat-summary'),
 ]
 
 urlpatterns += router.urls
