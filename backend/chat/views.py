@@ -114,17 +114,30 @@ class HighlightMessageView(APIView):
         if not request.user.is_staff:
             return Response({'error': 'Voce nao tem permissao para destacar mensagens.'},
                             status=status.HTTP_403_FORBIDDEN)
+            
+        try:
+            message = Message.objects.get(id=message_id)
+        except Message.DoesNotExist:
+            return Response({'error': 'Mensagem não encontrada.'}, status=status.HTTP_404_NOT_FOUND)
         
+        highlight = request.data.get('highlight')
         message = get_object_or_404(Message, id=message_id)
+
+        if highlight is None:
+            return Response({'error': 'Campo "highlight" é obrigatório (true ou false).'}, status=status.HTTP_400_BAD_REQUEST)
+        
         
         # tira o destaque de outras msgs do mesmo chat
         Message.objects.filter(chat=message.chat, is_highlighted=True).update(is_highlighted=False)
         
         # agr destaca a msg atual
         message.is_highlighted = True
+        message.highlighted = highlight
         message.save()
         
-        return Response({'message': 'Messagem destacada com sucesso.'}, status=status.HTTP_200_OK)
+        permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    
+        return Response({'success': f'Mensagem {"destacada" if highlight else "destaque removido"} com sucesso!'}, status=status.HTTP_200_OK)
     
 class RemoveHighlightMessageView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
