@@ -1,5 +1,6 @@
 from django.db import models
 from core.models import User #impor do modelo de user do core
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
@@ -19,3 +20,14 @@ class Message(models.Model):
     
     def __str__(self):
         return f"Message from {self.sender.username} in {self.chat.name}"
+    
+class Vote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.ForeignKey('Message', on_delete=models.CASCADE, related_name='votes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'message')
+
+    def __str__(self):
+        return f"{self.user.username} votou na mensagem {self.message.id}"
