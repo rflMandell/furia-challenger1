@@ -71,6 +71,13 @@ class MessageCreateView(generics.CreateAPIView):
         chat = Chat.objects.get(id=chat_id)
         serializer.save(chat=chat, user=self.request.user)
         
+class MessageListView(generics.ListAPIView):
+    serializer_class = MessageSerializer
+    
+    def get_queryset(self):
+        chat_id = self.kwargs['chat_id']
+        return Message.objects.filter(chat_id=chat_id).order_by('created_at')
+        
 
 def online_users_view(request):
     return JsonResponse({"online_users": get_online_users()})
