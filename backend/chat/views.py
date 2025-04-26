@@ -1,9 +1,11 @@
 from rest_framework import viewsets, permissions, status, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from .models import Chat, Message, Vote
 from .serializers import ChatSerializer, MessageSerializer, VoteSerializer
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from .online_users import get_online_users
 
 class ChatViewSet(viewsets.ModelViewSet):
@@ -51,6 +53,21 @@ class VoteViewSet(viewsets.ViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Vote.DoesNotExist:
             return Response({"error": "Voto nao encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        
+class VoteChatView(APIView):
+    def post(self, request, chat_id):
+        chat = get_object_or_404(Chat, id=chat_id)
+        vote_type = request.data.get('vote')
+        
+        if vote_type == 'upvote':
+            chat.upvote += 1
+        elif vote_type == 'downvote':
+            chat.downvotes += 1
+        else:
+            return Response({'error': 'Tipo de voto invalido.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        chat.save()
+        return Response({'message': 'Voto registrado com sucesso.'}, status=status.HTTP_200_OK)
         
 class ChatListView(generics.ListAPIView):
     """

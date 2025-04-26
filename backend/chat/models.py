@@ -1,13 +1,16 @@
 from django.db import models
-from core.models import User #impor do modelo de user do core
+from core.models import User 
 from django.contrib.auth import get_user_model
 
 # Create your models here.
 
 class Chat(models.Model):
     name = models.CharField(max_length=100) #nome do chat, vai ta como cs, lol etc...
-    description = models.TextField()
+    description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    upvote = models.PositiveIntegerField(default=0)
+    downvotes = models.PositiveIntegerField(default=0)
     
     def __str__(self):
         return self.name
