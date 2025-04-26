@@ -163,6 +163,19 @@ class MessagesByChatView(views.APIView):
         messages = Message.objects.filter(chat=chat).order_by('-created_at')
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class MessagesWithVotesByChatViews(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    
+    def get(self, request, chat_id):
+        try:
+            chat = Chat.objects.get(id=chat_id)
+        except Chat.DoesNotExist:
+            return Response({'error': 'Chat não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        messages = Message.objects.filter(chat=chat).order_by('-created_at')
+        serializer = MessagesWithVotesByChatViews(messages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
 
 def online_users_view(request):

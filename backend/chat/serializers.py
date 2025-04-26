@@ -17,3 +17,10 @@ class VoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vote
         fields = ['id', 'user', 'message', 'created_at']
+        
+class MessageWithVotesSerializer(serializers.ModelSerializer):
+    votes = serializers.IntegerField(source='votes.count', read_only=True)
+    
+    class Meta:
+        model = Message
+        fields = ['id', 'user', 'chat', 'content', 'created_at', 'highlighted', 'votes']

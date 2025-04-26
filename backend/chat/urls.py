@@ -19,6 +19,7 @@ urlpatterns = [
     path('messages/<int:message_id>/remove-highlight/', RemoveHighlightMessageView.as_view(), name='remove-highlight-message'),
     path('chats/highlighted/', ChatsWithHighlightedMessagesView.as_view(), name='chats-with-highlighted-messages'),
     path('chats/<int:chat_id>/messages/', MessagesByChatView.as_view(), name='messages-by-chat'),
+    path('chats/<int:chat_id>/messages_with_votes/', MessagesWithVotesByChatViews.as_view(), name='messages-with-votes-by-chat'),
 ]
 
 urlpatterns += router.urls
