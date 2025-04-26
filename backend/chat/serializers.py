@@ -10,13 +10,8 @@ class ChatSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['id', 'chat', 'user', 'content', 'created_at']
+        fields = ['id', 'chat', 'user', 'content', 'created_at', 'upvotes', 'downvotes', 'is_highlighted']
         read_only_fields = ['user', 'created_at', 'chat']
-
-    class Meta:
-        model = Message
-        fields = ['id', 'chat', 'sender', 'content', 'created_at', 'vote_count']
-        read_only_fields = ['sender', 'created_at']
         
 class VoteSerializer(serializers.ModelSerializer):
     class Meta:

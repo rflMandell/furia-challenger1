@@ -24,7 +24,7 @@ class Message(models.Model):
     upvotes = models.PositiveIntegerField(default=0)
     downvotes = models.PositiveIntegerField(default=0)
     
-    is_highlighted = models.BooleanField(default=Falde)
+    is_highlighted = models.BooleanField(default=False)
     
     def __str__(self):
         return f"Message {self.content[:20]} from {self.sender.username} in {self.chat.name}"

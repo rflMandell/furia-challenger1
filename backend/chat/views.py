@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, status, generics
+from rest_framework import viewsets, permissions, status, generics, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -89,11 +89,21 @@ class MessageCreateView(generics.CreateAPIView):
         serializer.save(chat=chat, user=self.request.user)
         
 class MessageListView(generics.ListAPIView):
+    queryset = Message.objects.all()
     serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]
+    
+    filter_backends = [filters.OrderingFilter]
+    ordering = ['-created_at'] #msg mais recente primeiro
     
     def get_queryset(self):
+        queryset = super().get_queryset()
         chat_id = self.kwargs['chat_id']
-        return Message.objects.filter(chat_id=chat_id).order_by('created_at')
+        
+        if chat_id:
+            queryset = queryset.filter(chat_id=chat_id)
+            
+        return queryset
     
 class HighlightMessageView(APIView):
     permission_classes = [IsAuthenticated]
