@@ -23,6 +23,7 @@ class Message(models.Model):
     user = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    is_highlighted = models.BooleanField(default=False)
     
     def __str__(self):
-        return f"{self.user.username}: {self.content[:20]}"
+        return f"Message from {self.user.username} in {self.chat.name}"

@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions
+from rest_framework.permissions import IsAdminUser
 from .models import Chat, Message
 from .serializers import ChatSerializer, MessageSerializer
 
@@ -10,7 +11,10 @@ class ChatViewSet(viewsets.ModelViewSet):
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        instance = serializer.save()
+        if 'is_highlighted' in self.request.data:
+            instance.is_highlighted = self.request.data['is_highlighted']
+            instance.save()
