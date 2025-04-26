@@ -7,6 +7,8 @@ from .serializers import ChatSerializer, MessageSerializer, VoteSerializer
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.http import JsonResponse
+from django.db import models
 from .online_users import get_online_users
 
 class ChatViewSet(viewsets.ModelViewSet):
@@ -212,6 +214,31 @@ class ChatSummaryView(views.APIView):
             })
         
         return Response(summary)
+    
+class ChatSummaryExportView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    
+    def get(self, request):
+        chats = Chat.objects.all()
+        summary = []
+        
+        for chat in chats:
+            messages = chat.messages.all()
+            total_messages = messages.count()
+            highlighted_messages = messages.filter(highlighted=True).count()
+            total_votes = messages.aggregate(total_votes=models.Sum('votes'))['total_votes'] or 0
+
+            summary.append({
+                'chat_id': chat.id,
+                'chat_name': chat.name,
+                'total_messages': total_messages,
+                'highlighted_messages': highlighted_messages,
+                'total_votes': total_votes,
+            })
+
+        response = JsonResponse(summary, safe=False)
+        response['Content-Disposition'] = 'attachment; filename="chat_summary.json"'
+        return response
 
 def online_users_view(request):
     return JsonResponse({"online_users": get_online_users()})
