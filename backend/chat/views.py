@@ -94,6 +94,26 @@ class MessageListView(generics.ListAPIView):
     def get_queryset(self):
         chat_id = self.kwargs['chat_id']
         return Message.objects.filter(chat_id=chat_id).order_by('created_at')
+    
+class HighlightMessageView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, message_id):
+        #verifica se e um adm
+        if not request.user.is_staff:
+            return Response({'error': 'Voce nao tem permissao para destacar mensagens.'},
+                            status=status.HTTP_403_FORBIDDEN)
+        
+        message = get_object_or_404(Message, id=message_id)
+        
+        # tira o destaque de outras msgs do mesmo chat
+        Message.objects.filter(chat=message.chat, is_highlighted=True).update(is_highlighted=False)
+        
+        # agr destaca a msg atual
+        message.is_highlighted = True
+        message.save()
+        
+        return Response({'message': 'Messagem destacada com sucesso.'}, status=status.HTTP_200_OK)
         
 
 def online_users_view(request):

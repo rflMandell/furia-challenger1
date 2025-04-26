@@ -21,8 +21,13 @@ class Message(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     
+    upvotes = models.PositiveIntegerField(default=0)
+    downvotes = models.PositiveIntegerField(default=0)
+    
+    is_highlighted = models.BooleanField(default=Falde)
+    
     def __str__(self):
-        return f"Message from {self.sender.username} in {self.chat.name}"
+        return f"Message {self.content[:20]} from {self.sender.username} in {self.chat.name}"
     
 class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
