@@ -69,7 +69,7 @@ class MessageCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         chat_id = self.kwargs['chat_id']
         chat = Chat.objects.get(id=chat_id)
-        serializer.save(chat=chat)
+        serializer.save(chat=chat, user=self.request.user)
         
 
 def online_users_view(request):

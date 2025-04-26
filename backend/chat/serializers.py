@@ -8,8 +8,10 @@ class ChatSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'created_at']
 
 class MessageSerializer(serializers.ModelSerializer):
-    sender = UserSerializer(read_only=True)
-    vote_count = serializers.IntegerField(source='votes.count', read_only=True)
+    class Meta:
+        model = Message
+        fields = ['id', 'chat', 'user', 'content', 'created_at']
+        read_only_fields = ['user', 'created_at', 'chat']
 
     class Meta:
         model = Message
