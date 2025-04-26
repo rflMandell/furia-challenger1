@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, status, generics, filters
+from rest_framework import viewsets, permissions, status, generics, filters, views
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -124,6 +124,20 @@ class HighlightMessageView(APIView):
         message.save()
         
         return Response({'message': 'Messagem destacada com sucesso.'}, status=status.HTTP_200_OK)
+    
+class RemoveHighlightMessageView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, message_id):
+        try:
+            message = Message.objects.get(id=message_id)
+        except Message.DoesNotExist:
+            return Response({"detail": "messagem nao encontrada."}, status=status.HTTP_404_NOT_FOUND)
+        
+        message.is_highlighted = False
+        message.save()
+        
+        return Response({"detail": "destaque removido com sucesso."}, status=status.HTTP_200_OK)
         
 
 def online_users_view(request):
