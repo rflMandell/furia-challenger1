@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions, status, generics, filters, views
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
 from .models import Chat, Message, Vote
 from .serializers import ChatSerializer, MessageSerializer, VoteSerializer
@@ -149,6 +149,19 @@ class ChatsWithHighlightedMessagesView(views.APIView):
         ).distinct()
         
         serializer = ChatSerializer(chats_with_highlighted_messages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class MessagesByChatView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, IsAdminUser]
+    
+    def get(self, request, chat_id):
+        try:
+            chat = Chat.objects.get(id=chat_id)
+        except Chat.DoesNotExist:
+            return Response({'error': 'Chat não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        messages = Message.objects.filter(chat=chat).order_by('-created_at')
+        serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
 
