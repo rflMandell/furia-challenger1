@@ -1,18 +1,21 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';       // Página inicial
-import Login from './pages/Login';     // Página de login
-import Chat from './pages/Chat';       // Página de chat
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Salas from './pages/Salas';
+import Sala from './pages/Sala';
+import Chat from './Chat';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/chat" element={<Chat />} />
+        <Route path="/salas" element={<Salas />} />
+        <Route path="/salas/:salaId" element={<Sala />} />
+        <div>
+          <Chat />
+        </div>
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 
